@@ -1,6 +1,8 @@
 # Klist2
 A tool for exploiting Kerberos tickets against system with Credential Guard enabled. 
 
+**The tools in this Repo have been tested on multiple systems but I am not an active developer. I did my best to cover basis and implement proper error handling but mistakes could have been made. The purpose of this repo is more of a proof of concept for technique so use at your own risk**
+
 This repository is a work in progress for abusing cached kerberos tickets when credential guard is enabled. With Credential Guard enabled (which it is by default on Windows server 2025 and newer) TGT session keys are protected even from Administrators or system limiting credential theft exposure. A common technique I utilize during penetration tests is to use the builtin klist.exe tool to extract TGT's that are cached on a target system which often results in relatively stealthy credential theft, privilege escalation and lateral movement. Technique is fairly simple. You can use klist sessions to enumerate logon sessions then dump TGT information using klist tgt -li <luid> command. 
 
 PS C:\WINDOWS\system32> klist sessions
@@ -306,4 +308,9 @@ EncodedTicket      : (size: 1244)
 0050  82 04 89 a0 03 02 01 12:a1 03 02 01 07 a2 82 04                              
 0060  7b 04 82 04 77 a4 be a3:90 d3 39 09 e4 3b 64 24   
 
+
+**Guidance for Defenders**
+Credential Guard like any security tool or feature is just one layer of defense and should not be relied upon to "save" you from credential theft. Implementing tiering in Active Directory, strong network access controls to limit attack surface and principle of least privilege are still your best defenses against these types of attacks. Once a malicious actor has Administrator rights on a production server there is only so much that your tools and configurations can do to help you as there are just too many avenues available to privileged users to work around limitations enforced on the system. RestrictedAdmin mode for RDP for privileged users can be utilized to help prevent caching of TGT's on remote systems but that is still being tested and researched (I should also point out that many multi-factor implementations can be bypassed with RestrictedAdmin mode so that is a bit of a double edge sword as well if multi-factor is a control you rely on internally). Behavioral based monitoring can go a long way in detecting these types of attacks, especially looking for unusual logins to systems (a service account using RDP for example is an immediate red flag and indicator of compromise). If your endpoint protection tools support it, configure them to generate alerts when a Kerberos ticket identity and LUID identity do not match (for example if the LUID is for test and the kerberos ticket is for Administrator then this can be treated as an indicator of compromise that should be acted on). 
+
+Feel free to reach out with comments or suggestions. 
 
