@@ -1,7 +1,7 @@
 # Klist2
 A tool for exploiting Kerberos tickets against system with Credential Guard enabled. 
 
-**The tools in this Repo have been tested on multiple systems but I am not an active developer. I did my best to cover basis and implement proper error handling but mistakes could have been made. The purpose of this repo is more of a proof of concept for technique so use at your own risk**
+**The tools in this Repo have been tested on multiple systems but I am not an active developer. I did my best to cover bases and implement proper error handling but mistakes could have been made. The purpose of this repo is more of a proof of concept for technique so use at your own risk**
 
 This repository is a work in progress for abusing cached kerberos tickets when credential guard is enabled. With Credential Guard enabled (which it is by default on Windows server 2025 and newer) TGT session keys are protected even from Administrators or system limiting credential theft exposure. A common technique I utilize during penetration tests is to use the builtin klist.exe tool to extract TGT's that are cached on a target system which often results in relatively stealthy credential theft, privilege escalation and lateral movement. Technique is fairly simple. You can use klist sessions to enumerate logon sessions then dump TGT information using klist tgt -li <luid> command. 
 
